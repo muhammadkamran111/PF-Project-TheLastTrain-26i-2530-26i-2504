@@ -96,5 +96,85 @@ bool canTraverse(int targetFloor, int targetRoom, char connType, const char inve
     return false;
 }
 
+// Update Energy and Time based on delta values, ensuring they remain within valid bounds
+
+void applyResourceDelta(int& energy, int& time, int deltaEnergy, int deltaTime) 
+{
+    energy = energy + deltaEnergy;
+    if (energy < 0) energy = 0;
+    if (energy > MAX_ENERGY) energy = MAX_ENERGY;
+
+    time = time + deltaTime;
+    if (time < 0) time = 0;
+    if (time > 100) time = 100;
+}
+
+//Apply points to score :
+
+void applyScoreDelta(int& score, int deltaScore) 
+{
+    score = score + deltaScore;
+}
+
+//Checking the availability of an item in the inventory based on its symbol representation
+
+bool hasItem(const char inventory[MAX_INVENTORY_CAPACITY], int inventoryCount, char itemSymbol) 
+{
+    for (int a = 0; a < inventoryCount; a++) 
+    {
+        if (inventory[a] == itemSymbol) 
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+//This function adds an item to inventory :
+
+bool addItem(char inventory[MAX_INVENTORY_CAPACITY], int& inventoryCount, char itemSymbol) 
+{
+    if (inventoryCount >= MAX_INVENTORY_CAPACITY) 
+    {
+        return false;
+    }
+    inventory[inventoryCount] = itemSymbol;
+    inventoryCount++;
+    return true;
+}
+
+//This function removes an item from inventory :(if matching)
+
+bool removeItem(char inventory[MAX_INVENTORY_CAPACITY], int& inventoryCount, char itemSymbol) 
+{
+    int foundIndex = -1;
+    for (int a = 0; a < inventoryCount; a++) 
+    {
+        if (inventory[a] == itemSymbol) 
+        {
+            foundIndex = a;
+            break;
+        }
+    }
+
+    if (foundIndex == -1) 
+    {
+        return false;
+    }
+
+    for (int a = foundIndex; a < inventoryCount - 1; a++) 
+    {
+        inventory[a] = inventory[a + 1];
+    }
+    inventoryCount--;
+    inventory[inventoryCount] = ENT_NONE;
+    return true;
+}
+
+
+
+
+
+
 
 
