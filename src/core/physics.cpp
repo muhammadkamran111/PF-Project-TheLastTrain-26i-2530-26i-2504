@@ -106,7 +106,7 @@ void applyResourceDelta(int& energy, int& time, int deltaEnergy, int deltaTime)
 
     time = time + deltaTime;
     if (time < 0) time = 0;
-    if (time > 100) time = 100;
+    if (time > MAX_TIME) time = MAX_TIME;
 }
 
 //Apply points to score :

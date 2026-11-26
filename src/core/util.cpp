@@ -2,7 +2,7 @@
 #include <iostream>
 using namespace std;
 
-//If a function is less than minimun value then this function will will set that to minimun: Same for maximum value
+//If a function value is less than minimum value then this function will set that to minimum: Same for maximum value
 int clampInt(int val,int minVal,int maxVal)
 {
     if (val < minVal) return minVal;
