@@ -13,3 +13,50 @@ static bool isValidEntity(char ch)
     }
     return false;
 }
+
+//Checing that is line start with valid given prefix or not.
+
+static bool startsWith(const char* line, const char* prefix)
+{
+    int a = 0;
+    while (prefix[a] != '\0')
+    {
+        if (line[a] != prefix[a])
+        {
+            return false;
+        }
+        a++;
+    }
+    return true;
+}
+
+// A function to find integer value after : in a line.
+static int readIntAfterColon(const char* line, int defaultVal)
+{
+    int a = 0;
+    while (line[a] != '\0' && line[a] != ':')  a++;
+    if (line[a] == '\0')   return defaultVal;
+
+    a++; 
+
+    while (line[a] == ' ' || line[a] == '\t') 
+    {
+        a++;
+    }
+
+    int sum = 0;
+    bool foundDigit = false;
+    while (line[a] >= '0'  &&  line[a] <= '9') 
+    {
+        sum = sum * 10 + (line[a] - '0');
+        foundDigit = true;
+        a++;
+    }
+
+    if (!foundDigit) 
+    {
+        return defaultVal;
+    }
+    return sum;
+
+}
