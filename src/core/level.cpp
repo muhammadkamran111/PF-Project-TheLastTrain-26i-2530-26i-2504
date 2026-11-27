@@ -2,6 +2,7 @@
 #include "util.h"
 #include <fstream>
 #include <iostream>
+using namespace std;
 
 // A function to check if character is one of the valid game entities or not?
 
@@ -14,7 +15,7 @@ static bool isValidEntity(char ch)
     return false;
 }
 
-//Checing that is line start with valid given prefix or not.
+//Checking that is line start with valid given prefix or not.
 
 static bool startsWith(const char* line, const char* prefix)
 {
@@ -30,7 +31,8 @@ static bool startsWith(const char* line, const char* prefix)
     return true;
 }
 
-// A function to find integer value after : in a line.
+// A function to find integer value after : in a line. i.i(energy: 10)
+
 static int readIntAfterColon(const char* line, int defaultVal)
 {
     int a = 0;
@@ -58,5 +60,52 @@ static int readIntAfterColon(const char* line, int defaultVal)
         return defaultVal;
     }
     return sum;
+
+}
+
+//THis is used to build ascii buliding map from building.txt
+
+bool loadBuildingMap(const char* filename, char horizontalConn[NUM_FLOORS][ROOMS_PER_FLOOR - 1], char roomEntities[NUM_FLOORS][ROOMS_PER_FLOOR][MAX_ENTITIES_PER_ROOM], int entityCounts[NUM_FLOORS][ROOMS_PER_FLOOR])
+{
+
+    //initialization of all arrays :
+    for (int a = 0; a < NUM_FLOORS; a++) 
+    {
+        for (int b = 0; b < ROOMS_PER_FLOOR - 1; b++) 
+        {
+            horizontalConn[a][b] = CONN_NONE;
+        }
+        for (int b = 0; b < ROOMS_PER_FLOOR; b++) 
+        {
+            entityCounts[a][b] = 0;
+            for (int c = 0; c < MAX_ENTITIES_PER_ROOM; c++) 
+            {
+                roomEntities[a][b][c] = ENT_NONE;
+            }
+        }
+    }
+
+    ifstream file(filename);
+    if (!file.is_open())
+    {
+        return false;
+    }
+    char line[MAX_LINE_LEN];
+    char entityLine[MAX_LINE_LEN];
+    int floorLoaded = 0;
+
+    while (file.getline(line, MAX_LINE_LEN))
+    {
+        int foundFloor = -1;
+        int pos = 0;
+        while (line[pos] != '\0') 
+        {
+                    if (line[pos] == 'F' && line[pos + 1] >= '1' && line[pos + 1] <= '5' && line[pos + 2] == '-' && line[pos + 3] == 'R' && line[pos + 4] == '1') 
+
+        }
+    }
+        
+    
+
 
 }
