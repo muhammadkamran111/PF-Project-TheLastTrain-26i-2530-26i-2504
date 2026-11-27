@@ -2,7 +2,10 @@
 #include "util.h"
 #include <fstream>
 #include <iostream>
+<<<<<<< HEAD
 using namespace std;
+=======
+>>>>>>> b1080cc (I have made the file for saving and loading game data on savegame.txt and game_summary.txt)
 
 // A function to check if character is one of the valid game entities or not?
 
@@ -15,7 +18,11 @@ static bool isValidEntity(char ch)
     return false;
 }
 
+<<<<<<< HEAD
 //Checking that is line start with valid given prefix or not.
+=======
+//Checing that is line start with valid given prefix or not.
+>>>>>>> b1080cc (I have made the file for saving and loading game data on savegame.txt and game_summary.txt)
 
 static bool startsWith(const char* line, const char* prefix)
 {
@@ -31,8 +38,12 @@ static bool startsWith(const char* line, const char* prefix)
     return true;
 }
 
+<<<<<<< HEAD
 // A function to find integer value after : in a line. i.i(energy: 10)
 
+=======
+// A function to find integer value after : in a line.
+>>>>>>> b1080cc (I have made the file for saving and loading game data on savegame.txt and game_summary.txt)
 static int readIntAfterColon(const char* line, int defaultVal)
 {
     int a = 0;
@@ -61,6 +72,7 @@ static int readIntAfterColon(const char* line, int defaultVal)
     }
     return sum;
 
+<<<<<<< HEAD
 }
 
 //THis is used to build ascii buliding map from building.txt
@@ -108,4 +120,6 @@ bool loadBuildingMap(const char* filename, char horizontalConn[NUM_FLOORS][ROOMS
     
 
 
+=======
+>>>>>>> b1080cc (I have made the file for saving and loading game data on savegame.txt and game_summary.txt)
 }
