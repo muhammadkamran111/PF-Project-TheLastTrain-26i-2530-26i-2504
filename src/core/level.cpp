@@ -200,6 +200,54 @@ bool loadBuildingMap(const char* filename, char horizontalConn[NUM_FLOORS][ROOMS
     file.close();
     return (floorsLoaded == NUM_FLOORS);
 }
+//This function is used to load initial values from initial-state.txt:
+
+bool loadInitialState(const char* filename, int& playerFloor, int& playerRoom, int& energy, int& time, int& score, char inventory[MAX_INVENTORY_CAPACITY], int& inventoryCount, bool objectives[NUM_OBJECTIVES], int& emergencyTripsLeft) 
+{
+    ifstream file(filename);
+    if (!file.is_open()) {
+        return false;
+    }
+
+    // Set default values first
+    playerFloor = 1;
+    playerRoom = 1;
+    energy = INITIAL_ENERGY;
+    time = INITIAL_TIME;
+    score = INITIAL_SCORE;
+    inventoryCount = 0;
+    emergencyTripsLeft = 0;
+
+    for (int a = 0; a < MAX_INVENTORY_CAPACITY; a++) {
+        inventory[a] = ENT_NONE;
+    }
+    for (int a = 0; a < NUM_OBJECTIVES; a++) {
+        objectives[a] = false;
+    }
+
+    char line[MAX_LINE_LEN];
+    while (file.getline(line, MAX_LINE_LEN)) 
+    {
+        trimWhitespace(line);
+        if (line[0] == '\0') 
+        {
+            continue;
+        }
+        if (startsWith(line, "INITIAL_ENERGY:")) 
+        {
+            energy = readIntAfterColon(line, INITIAL_ENERGY);
+        } else if (startsWith(line, "INITIAL_TIME:")) 
+        {
+            time = readIntAfterColon(line, INITIAL_TIME);
+        } else if (startsWith(line, "INITIAL_SCORE:")) 
+        {
+            score = readIntAfterColon(line, INITIAL_SCORE);
+        }
+    }
+
+    file.close();
+    return true;
+}
 
 
         
