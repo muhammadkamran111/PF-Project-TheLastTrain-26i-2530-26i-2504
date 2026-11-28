@@ -2,10 +2,7 @@
 #include "util.h"
 #include <fstream>
 #include <iostream>
-<<<<<<< HEAD
 using namespace std;
-=======
->>>>>>> b1080cc (I have made the file for saving and loading game data on savegame.txt and game_summary.txt)
 
 // A function to check if character is one of the valid game entities or not?
 
@@ -18,11 +15,7 @@ static bool isValidEntity(char ch)
     return false;
 }
 
-<<<<<<< HEAD
 //Checking that is line start with valid given prefix or not.
-=======
-//Checing that is line start with valid given prefix or not.
->>>>>>> b1080cc (I have made the file for saving and loading game data on savegame.txt and game_summary.txt)
 
 static bool startsWith(const char* line, const char* prefix)
 {
@@ -38,12 +31,8 @@ static bool startsWith(const char* line, const char* prefix)
     return true;
 }
 
-<<<<<<< HEAD
-// A function to find integer value after : in a line. i.i(energy: 10)
+// A function to find integer value after : in a line. i.e(energy:  10)
 
-=======
-// A function to find integer value after : in a line.
->>>>>>> b1080cc (I have made the file for saving and loading game data on savegame.txt and game_summary.txt)
 static int readIntAfterColon(const char* line, int defaultVal)
 {
     int a = 0;
@@ -61,7 +50,7 @@ static int readIntAfterColon(const char* line, int defaultVal)
     bool foundDigit = false;
     while (line[a] >= '0'  &&  line[a] <= '9') 
     {
-        sum = sum * 10 + (line[a] - '0');
+        sum = sum * 10 + (line[a] - '0');    
         foundDigit = true;
         a++;
     }
@@ -72,7 +61,6 @@ static int readIntAfterColon(const char* line, int defaultVal)
     }
     return sum;
 
-<<<<<<< HEAD
 }
 
 //THis is used to build ascii buliding map from building.txt
@@ -104,22 +92,117 @@ bool loadBuildingMap(const char* filename, char horizontalConn[NUM_FLOORS][ROOMS
     }
     char line[MAX_LINE_LEN];
     char entityLine[MAX_LINE_LEN];
-    int floorLoaded = 0;
+    int floorsLoaded = 0;
 
     while (file.getline(line, MAX_LINE_LEN))
     {
         int foundFloor = -1;
         int pos = 0;
-        while (line[pos] != '\0') 
+        while (line[pos] != '\0') //This loop is used to find exact floor number:
         {
-                    if (line[pos] == 'F' && line[pos + 1] >= '1' && line[pos + 1] <= '5' && line[pos + 2] == '-' && line[pos + 3] == 'R' && line[pos + 4] == '1') 
-
+            if (line[pos] == 'F' && line[pos + 1] >= '1' && line[pos + 1] <= '5' && line[pos + 2] == '-' && line[pos + 3] == 'R' && line[pos + 4] == '1') 
+            {
+                foundFloor = line[pos + 1] - '1'; 
+                break;
+            }
+            pos++;
         }
+
+        if (foundFloor == -1) 
+        {
+            continue;
+        }
+
+        int roomStartPos[ROOMS_PER_FLOOR];
+        int foundRooms = 0;
+
+        for (int a = 0; line[a] != '\0' && foundRooms < ROOMS_PER_FLOOR; a++) //A loop to find the starting position of each room in the line
+        {
+            if (line[a] == 'F' && line[a + 1] == (char)('1' + foundFloor) &&
+                line[a + 2] == '-' && line[a + 3] == 'R') 
+            {
+                roomStartPos[foundRooms] = a;
+                foundRooms++;
+            }
+        }
+
+        if (foundRooms != ROOMS_PER_FLOOR) 
+        {
+            continue;
+        }
+
+        // Checking Horizontal Conection between them:
+
+        for (int a = 0; a < ROOMS_PER_FLOOR - 1; a++) 
+        {
+            int startScan = roomStartPos[a] + 5;
+            int endScan = roomStartPos[a + 1];
+            char conn = CONN_NONE;
+
+            for (int b = startScan; b < endScan; b++) 
+            {
+                if (line[b] == 'L' && line[b + 1] == '1') //L1 is not a connection:
+                {
+                   
+                    conn = CONN_NONE;
+                    break;
+                }
+                if (line[b] == CONN_DOOR || line[b] == CONN_WINDOW || line[b] == CONN_LOCKED_DOOR || line[b] == CONN_SOLID_WALL) 
+                {
+                    conn = line[b];
+                    break;
+                }
+            }
+            horizontalConn[foundFloor][a] = conn;
+        }
+
+        if (file.getline(entityLine, MAX_LINE_LEN)) 
+        {
+            // Find the 5 '|' room borders starting from column 7 (skip left staircase border)
+            int bars[ROOMS_PER_FLOOR + 1];
+            int barCount = 0;
+            for (int a = 7; entityLine[a] != '\0' && barCount <= ROOMS_PER_FLOOR; a++) 
+            {
+                if (entityLine[a] == '|') 
+                {
+                    bars[barCount] = a;
+                    barCount++;
+                }
+            }
+
+            if (barCount == ROOMS_PER_FLOOR + 1) 
+            {
+                for (int a = 0; a < ROOMS_PER_FLOOR; a++) 
+                {
+                    for (int b = bars[a] + 1; b < bars[a + 1]; b++) 
+                    {
+                        char ch = entityLine[b];
+                        if (isValidEntity(ch) && entityCounts[foundFloor][a] < MAX_ENTITIES_PER_ROOM) 
+                        {
+                            roomEntities[foundFloor][a][entityCounts[foundFloor][a]] = ch;
+                            entityCounts[foundFloor][a]++;
+
+                            if (foundFloor == 0 && a == 3 && ch == ENT_ENERGY_PACK &&
+                                entityCounts[foundFloor][a] < MAX_ENTITIES_PER_ROOM) 
+                                {
+                                roomEntities[foundFloor][a][entityCounts[foundFloor][a]] = ENT_ENERGY_PACK;
+                                entityCounts[foundFloor][a]++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        floorsLoaded++;
     }
+
+    file.close();
+    return (floorsLoaded == NUM_FLOORS);
+}
+
+
         
     
 
 
-=======
->>>>>>> b1080cc (I have made the file for saving and loading game data on savegame.txt and game_summary.txt)
-}
